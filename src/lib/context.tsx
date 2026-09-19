@@ -1,5 +1,5 @@
 import { createContext, useContext, type ReactNode } from "react";
-import type { Profile } from "./supabase";
+import type { Profile } from "./types";
 
 interface AppContextValue {
   profile: Profile;

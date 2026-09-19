@@ -4,7 +4,7 @@ import { TodayScreen } from "./components/TodayScreen";
 import { LeaderboardScreen } from "./components/LeaderboardScreen";
 import { AppProvider } from "./lib/context";
 import { authenticate, getCachedProfile, fetchProfile, initTelegramApp } from "./lib/auth";
-import type { Profile } from "./lib/supabase";
+import type { Profile } from "./lib/types";
 import { Skeleton } from "./components/ui";
 
 function AppContent() {

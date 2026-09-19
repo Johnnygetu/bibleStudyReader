@@ -15,7 +15,7 @@ import {
   fetchLeaderboard,
   submitQuizAnswer,
 } from "@/lib/api";
-import type { ReadingPlanDay, ReadingProgressEntry, QuizQuestion, QuizAnswer, LeaderboardEntry } from "@/lib/supabase";
+import type { ReadingPlanDay, ReadingProgressEntry, QuizQuestion, QuizAnswer, LeaderboardEntry } from "@/lib/types";
 import { hapticImpact, hapticNotification } from "@/lib/telegram";
 import { ProgressBar, Skeleton, ErrorState, Avatar } from "@/components/ui";
 import ayatLogo from "@/assets/ayat-logo.png";

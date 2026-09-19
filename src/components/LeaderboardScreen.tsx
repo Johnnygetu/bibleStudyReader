@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState, useRef } from "react";
 import { Flame, Trophy, Crown, Medal, Award } from "lucide-react";
 import { useApp } from "@/lib/context";
 import { fetchLeaderboard } from "@/lib/api";
-import type { LeaderboardEntry } from "@/lib/supabase";
+import type { LeaderboardEntry } from "@/lib/types";
 import { Avatar, Skeleton, ErrorState } from "@/components/ui";
 import { hapticImpact } from "@/lib/telegram";
 import ayatLogo from "@/assets/ayat-logo.png";

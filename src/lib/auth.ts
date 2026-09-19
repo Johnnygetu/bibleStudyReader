@@ -1,39 +1,38 @@
-import { supabase, type Profile } from "./supabase";
+import type { Profile } from "./types";
 import { getTelegramInitData, getTelegramUser, getTelegramWebApp } from "./telegram";
 
 const AUTH_STORAGE_KEY = "bible_challenge_profile";
+
+function getDummyProfile(tgUser: any): Profile {
+  return {
+    id: "dummy-user-id-" + (tgUser?.id || "123"),
+    telegram_id: tgUser?.id || 123456789,
+    username: tgUser?.username || "dummyuser",
+    first_name: tgUser?.first_name || "Dummy",
+    last_name: tgUser?.last_name || "User",
+    photo_url: tgUser?.photo_url || "https://api.dicebear.com/7.x/avataaars/svg?seed=Dummy",
+    current_streak: 5,
+    longest_streak: 12,
+    last_read_date: new Date().toISOString(),
+    total_quiz_correct: 42,
+    total_quiz_answered: 50,
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
+  };
+}
 
 export async function authenticate(): Promise<Profile> {
   const tgUser = getTelegramUser();
   const initData = getTelegramInitData();
 
-  if (!tgUser || !initData) {
-    throw new Error("Not running inside Telegram");
-  }
-
-  const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-  const response = await fetch(`${supabaseUrl}/functions/v1/telegram-auth`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
-    },
-    body: JSON.stringify({ initData }),
-  });
-
-  if (!response.ok) {
-    const text = await response.text();
-    throw new Error(`Auth failed: ${response.status} ${text}`);
-  }
-
-  const data = await response.json();
-  if (!data.profile) {
-    throw new Error("No profile returned from auth");
-  }
-
-  const profile = data.profile as Profile;
-  localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify({ profile, telegramId: tgUser.id }));
-  return profile;
+  // For dummy testing, we can bypass the strict telegram check if not running in TG
+  const dummyProfile = getDummyProfile(tgUser);
+  localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify({ profile: dummyProfile, telegramId: dummyProfile.telegram_id }));
+  
+  // Simulate network delay
+  await new Promise(resolve => setTimeout(resolve, 500));
+  
+  return dummyProfile;
 }
 
 export function getCachedProfile(): Profile | null {
@@ -58,13 +57,11 @@ export function getMyProfileId(): string | null {
 }
 
 export async function fetchProfile(profileId: string): Promise<Profile | null> {
-  const { data, error } = await supabase
-    .from("profiles")
-    .select("*")
-    .eq("id", profileId)
-    .maybeSingle();
-  if (error) throw error;
-  return data;
+  const cached = getCachedProfile();
+  if (cached && cached.id === profileId) {
+    return cached;
+  }
+  return getDummyProfile(null);
 }
 
 export function initTelegramApp() {
