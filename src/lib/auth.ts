@@ -1,4 +1,4 @@
-import { supabase, supabaseUrl, supabaseAnonKey, type Profile } from "./supabase";
+import { supabase, type Profile } from "./supabase";
 import { getTelegramInitData, getTelegramUser, getTelegramWebApp } from "./telegram";
 
 const AUTH_STORAGE_KEY = "bible_challenge_profile";
@@ -11,11 +11,12 @@ export async function authenticate(): Promise<Profile> {
     throw new Error("Not running inside Telegram");
   }
 
+  const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
   const response = await fetch(`${supabaseUrl}/functions/v1/telegram-auth`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${supabaseAnonKey}`,
+      Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
     },
     body: JSON.stringify({ initData }),
   });
